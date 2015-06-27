@@ -1,7 +1,7 @@
 #/bin/sh
 
-host_name=Alastair
-client_name=Other
+host_name=host
+client_name=client
 
 if [ $# -ge 1 ]; then
   port=$1
@@ -26,6 +26,7 @@ move_cursor_up() {
 }
 
 server() {
+  echo "Starting on port $port"
   tail -f $output | nc -l -p $port > $input
   echo server ending
 }
@@ -57,7 +58,12 @@ chat() {
   echo chat ending
 }
 
-echo "Starting on port $port"
+read -r -p 'Enter username: ' host_name
 server &
+echo 'Waiting for client to join...'
+printf 'Enter username: ' > $output
+read -r client_name < $input
+echo "$client_name has joined the chat"
+echo "Joined $host_name's chat" > $output
 receive &
 chat
