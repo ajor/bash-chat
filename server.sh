@@ -36,10 +36,10 @@ receive() {
   local message
   while IFS= read -r message; do
     clear_line
-    printf '%s: %s\n%s: ' "$client_name" "$message" "$host_name"
+    printf '\033[0;36m%s: \033[0;39m%s\n%s: ' "$client_name" "$message" "$host_name"
     move_cursor_up > $output
     clear_line > $output
-    printf '%s: %s\n%s: ' "$client_name" "$message" "$client_name" > $output
+    printf '\033[0;37m%s: \033[0;39m%s\n%s: ' "$client_name" "$message" "$client_name" > $output
   done < $input
   echo receive ending
 }
@@ -50,10 +50,10 @@ chat() {
   while [ 1 ]; do
     IFS= read -r message
     clear_line > $output
-    printf '%s: %s\n%s: ' "$host_name" "$message" "$client_name" > $output
+    printf '\033[0;36m%s: \033[0;39m%s\n%s: ' "$host_name" "$message" "$client_name" > $output
     move_cursor_up
     clear_line
-    printf '%s: %s\n%s: ' "$host_name" "$message" "$host_name"
+    printf '\033[0;37m%s: \033[0;39m%s\n%s: ' "$host_name" "$message" "$host_name"
   done;
   echo chat ending
 }
