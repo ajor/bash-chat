@@ -17,6 +17,10 @@ rm -f $output
 mkfifo $input
 mkfifo $output
 
+clear_line() {
+  printf '\r\033[2K'
+}
+
 server() {
   echo server starting
   tail -f $output | nc -l -p $port > $input
@@ -25,21 +29,25 @@ server() {
 
 receive() {
   echo receive starting
+  printf '%s: ' "$client_name" > $output
+  local message
   while read message; do
-    full_message=`echo "$client_name: $message"`
-    echo $full_message
-    printf '\033[1A%s\n' "$full_message" > $output
+    clear_line
+    printf '%s: %s\n%s: ' "$client_name" "$message" "$host_name"
+    printf '%s: ' "$client_name" > $output
   done < $input
   echo receive ending
 }
 
 chat() {
   echo chat starting
+  printf '%s: ' "$host_name"
+  local message
   while [ 1 ]; do
     read message
-    full_message=`echo "$host_name: $message"`
-    echo $full_message > $output
-    printf '\033[1A%s\n' "$full_message"
+    clear_line > $output
+    printf '%s: %s\n%s: ' "$host_name" "$message" "$client_name" > $output
+    printf '%s: ' "$host_name"
   done;
   echo chat ending
 }
