@@ -22,16 +22,14 @@ clear_line() {
 }
 
 server() {
-  echo server starting
   tail -f $output | nc -l -p $port > $input
   echo server ending
 }
 
 receive() {
-  echo receive starting
   printf '%s: ' "$client_name" > $output
   local message
-  while read message; do
+  while IFS= read -r message; do
     clear_line
     printf '%s: %s\n%s: ' "$client_name" "$message" "$host_name"
     printf '%s: ' "$client_name" > $output
@@ -40,11 +38,10 @@ receive() {
 }
 
 chat() {
-  echo chat starting
   printf '%s: ' "$host_name"
   local message
   while [ 1 ]; do
-    read message
+    IFS= read -r message
     clear_line > $output
     printf '%s: %s\n%s: ' "$host_name" "$message" "$client_name" > $output
     printf '%s: ' "$host_name"
@@ -52,6 +49,7 @@ chat() {
   echo chat ending
 }
 
+echo "Starting on port $port"
 server &
 receive &
 chat
